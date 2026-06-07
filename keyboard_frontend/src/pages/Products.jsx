@@ -75,12 +75,6 @@ const MOCK_PRODUCTS = [
   }
 ];
 
-const MOCK_CATEGORIES = [
-  { id: 1, name: "Mechanical Decks" },
-  { id: 2, name: "Modular Addons" },
-  { id: 3, name: "Keycap Sets" },
-  { id: 4, name: "Key Switches" }
-];
 
 function Products() {
   const [products, setProducts] = useState([]);
@@ -103,12 +97,12 @@ function Products() {
         if (Array.isArray(res.data)) {
           setCategories(res.data);
         } else {
-          setCategories(MOCK_CATEGORIES);
+          setCategories([]);
         }
       })
       .catch((err) => {
-        console.warn("Backend categories unavailable, mounting fallback catalogs.", err);
-        setCategories(MOCK_CATEGORIES);
+        console.warn("Backend categories unavailable.", err);
+        setCategories([]);
       });
   }, []);
 
@@ -343,6 +337,27 @@ function Products() {
                 >
                   <div className="space-y-6 flex flex-col justify-between h-full text-left">
                     <div className="space-y-4">
+                      {/* Product Image */}
+                      {product.image_url && (
+                        <div className="-mx-6 -mt-6 mb-2 overflow-hidden rounded-t-[inherit] h-40">
+                          <img
+                            src={product.image_url}
+                            alt={product.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                            }}
+                          />
+                        </div>
+                      )}
+
+                      {/* Category badge */}
+                      {product.category?.name && (
+                        <div className="inline-flex items-center gap-1 px-2 py-0.5 bg-cyber-cyan/10 border border-cyber-cyan/20 rounded text-[10px] font-display tracking-widest text-cyber-cyan uppercase">
+                          {product.category.name}
+                        </div>
+                      )}
+
                       {/* Description */}
                       <p className="text-slate-400 text-sm leading-relaxed min-h-[72px]">
                         {product.description}

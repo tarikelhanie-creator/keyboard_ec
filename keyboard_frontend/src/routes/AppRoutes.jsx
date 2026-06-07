@@ -15,6 +15,7 @@ import AdminRoute from '../components/AdminRoute';
 import AdminLayout from '../admin/layouts/AdminLayout';
 import AdminDashboard from '../admin/pages/AdminDashboard';
 import AdminProducts from '../admin/pages/AdminProducts';
+import AdminCategories from '../admin/pages/AdminCategories';
 import AdminOrders from '../admin/pages/AdminOrders';
 
 const AppRoutes = () => {
@@ -25,6 +26,7 @@ const AppRoutes = () => {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="products" element={<AdminProducts />} />
+          <Route path="categories" element={<AdminCategories />} />
           <Route path="orders" element={<AdminOrders />} />
         </Route>
       </Route>

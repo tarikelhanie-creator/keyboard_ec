@@ -5,6 +5,7 @@ import AdminSidebar from '../components/AdminSidebar';
 const pageTitles = {
   '/admin': 'Dashboard',
   '/admin/products': 'Products',
+  '/admin/categories': 'Categories',
   '/admin/orders': 'Orders',
 };
 

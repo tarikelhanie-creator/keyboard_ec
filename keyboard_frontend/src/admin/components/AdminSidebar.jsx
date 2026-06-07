@@ -3,6 +3,7 @@ import { NavLink, Link } from 'react-router-dom';
 import {
   LayoutDashboard,
   Package,
+  Tag,
   ShoppingBag,
   LogOut,
   Cpu,
@@ -14,6 +15,7 @@ import { useAuth } from '../../context/AuthContext';
 const navItems = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/admin/products', label: 'Products', icon: Package },
+  { to: '/admin/categories', label: 'Categories', icon: Tag },
   { to: '/admin/orders', label: 'Orders', icon: ShoppingBag },
 ];
 

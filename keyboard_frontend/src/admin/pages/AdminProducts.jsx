@@ -135,11 +135,17 @@ const AdminProducts = () => {
                           <img
                             src={product.image_url}
                             alt=""
-                            className="h-10 w-10 rounded-lg object-cover border border-white/10"
+                            className="h-10 w-10 rounded-lg object-cover border border-white/10 flex-shrink-0"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
                           />
-                        ) : (
-                          <div className="h-10 w-10 rounded-lg bg-white/5 border border-white/10" />
-                        )}
+                        ) : null}
+                        <div
+                          className="h-10 w-10 rounded-lg bg-white/5 border border-white/10 flex-shrink-0 items-center justify-center"
+                          style={{ display: product.image_url ? 'none' : 'flex' }}
+                        />
                         <div>
                           <p className="font-display font-bold text-slate-200 uppercase tracking-wide">
                             {product.name}

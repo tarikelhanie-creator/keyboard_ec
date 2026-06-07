@@ -195,8 +195,25 @@ const ProductDetails = () => {
               MODULE ID: CK-{product.id}-SPEC
             </div>
             
-            {/* Keyboard graphic mock */}
-            <div className="text-center space-y-8">
+            {/* Real product image, falls back to the animated placeholder */}
+            {product.image_url ? (
+              <img
+                src={product.image_url}
+                alt={product.name}
+                className="w-full max-w-sm h-auto object-contain rounded-xl relative z-10 transition-transform duration-500 hover:scale-105"
+                onError={(e) => {
+                  // Replace with placeholder on broken URL
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }}
+              />
+            ) : null}
+
+            {/* Fallback placeholder — shown when no image or image fails to load */}
+            <div
+              className="text-center space-y-8"
+              style={{ display: product.image_url ? 'none' : 'block' }}
+            >
               <div className="w-64 h-64 mx-auto rounded-full bg-gradient-to-tr from-cyber-cyan/10 via-transparent to-cyber-magenta/5 border border-slate-800/50 flex items-center justify-center relative animate-pulse">
                 <Cpu className="h-20 w-20 text-cyber-cyan/40" />
                 <div className="absolute inset-4 rounded-full border border-dashed border-cyber-magenta/10" />
