@@ -4,12 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
     public function index(Request $request)
     {
         $query = Product::with('category');
+
+        // Filter by seller if user is a seller (for seller dashboard)
+        if (Auth::check() && Auth::user()->role === 'seller') {
+            $query->where('seller_id', Auth::id());
+        }
 
         // Search by product name
         if ($request->has('search')) {
@@ -71,13 +77,22 @@ class ProductController extends Controller
             $validated['image'] = $path;
         }
 
+        $validated['seller_id'] = Auth::id();
         $product = Product::create($validated);
 
         return response()->json($product->load('category'), 201);
     }
+    
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
+
+        // Verify seller ownership
+        if ($product->seller_id !== Auth::id() && Auth::user()->role !== 'admin') {
+            return response()->json([
+                'message' => 'Unauthorized. You can only edit your own products.'
+            ], 403);
+        }
 
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
@@ -103,7 +118,16 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
-        Product::destroy($id);
+        $product = Product::findOrFail($id);
+
+        // Verify seller ownership
+        if ($product->seller_id !== Auth::id() && Auth::user()->role !== 'admin') {
+            return response()->json([
+                'message' => 'Unauthorized. You can only delete your own products.'
+            ], 403);
+        }
+
+        $product->delete();
 
         return response()->json([
             'message' => 'Product deleted'

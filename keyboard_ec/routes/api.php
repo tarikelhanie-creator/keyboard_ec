@@ -18,7 +18,7 @@ Route::get('/categories', [CategoryController::class, 'index']);
 
 Route::middleware(['auth:api'])->group(function () {
 
-    Route::middleware('admin')->group(function () {
+    Route::middleware('seller')->group(function () {
 
         Route::get('/admin/stats', [AdminController::class, 'stats']);
         Route::get('/admin/orders', [AdminController::class, 'orders']);

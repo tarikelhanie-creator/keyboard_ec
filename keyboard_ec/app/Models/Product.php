@@ -13,7 +13,8 @@ class Product extends Model
         'stock',
         'image',
         'brand',
-        'category_id'
+        'category_id',
+        'seller_id'
     ];
     protected $appends = ['image_url'];
 
@@ -29,6 +30,11 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function seller()
+    {
+        return $this->belongsTo(User::class, 'seller_id');
     }
 
     public function orderItems()

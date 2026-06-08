@@ -3,7 +3,7 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Cpu } from 'lucide-react';
 
-const AdminRoute = () => {
+const SellerRoute = () => {
   const { user, loading } = useAuth();
   const location = useLocation();
 
@@ -32,4 +32,4 @@ const AdminRoute = () => {
   return <Outlet />;
 };
 
-export default AdminRoute;
+export default SellerRoute;

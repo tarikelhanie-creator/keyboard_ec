@@ -3,9 +3,11 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Card from '../components/Card';
 import Button from '../components/Button';
-import { ShieldAlert, User, Mail, KeyRound, Loader2, ShieldCheck } from 'lucide-react';
+import { ShieldAlert, User, Mail, KeyRound, Loader2, ShieldCheck, Store, ShoppingBag } from 'lucide-react';
 
 const Register = () => {
+  const [step, setStep] = useState('role'); // 'role' or 'form'
+  const [selectedRole, setSelectedRole] = useState(null);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,11 +19,20 @@ const Register = () => {
   const { register, login } = useAuth();
   const navigate = useNavigate();
 
+  const handleRoleSelection = (role) => {
+    setSelectedRole(role);
+    setStep('form');
+  };
+
+  const handleBackToRole = () => {
+    setStep('role');
+    setError(null);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     
-    // Client-side confirm password check
     if (password !== confirmPassword) {
       setError("Password confirmation does not match the secret keycode.");
       return;
@@ -30,28 +41,23 @@ const Register = () => {
     setSubmitting(true);
 
     try {
-      // 1. Submit Registration
-      await register(name, email, password);
+      await register(name, email, password, selectedRole);
       setSuccess(true);
 
-      // 2. Automate Login after account initialization
       try {
         await login(email, password);
         setTimeout(() => {
           navigate('/products', { replace: true });
         }, 1500);
       } catch (loginErr) {
-        // Fallback if auto-login fails (user can manually log in)
         console.warn("Auto-login failed. Redirecting to manual authorization port.", loginErr);
         setTimeout(() => {
           navigate('/login');
         }, 2000);
       }
     } catch (err) {
-      // Parse Laravel controller validation errors
       let errorMessage = "Registration credentials rejected.";
       if (typeof err === 'object') {
-        // e.g. Laravel fields error object
         const keys = Object.keys(err);
         if (keys.length > 0) {
           errorMessage = err[keys[0]][0] || errorMessage;
@@ -64,18 +70,129 @@ const Register = () => {
     }
   };
 
+  if (step === 'role') {
+    return (
+      <div className="max-w-4xl mx-auto py-12 text-left relative">
+        <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-cyber-magenta/5 blur-2xl rounded-full pointer-events-none" />
+
+        <Card title="SELECT YOUR ROLE" glowColor="magenta" tag="SYSTEM INIT">
+          <div className="space-y-6">
+            <p className="text-slate-400 text-xs leading-relaxed">
+              Choose your role in the marketplace. This determines your access level and features.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Customer Role Card */}
+              <div
+                onClick={() => handleRoleSelection('customer')}
+                className={`p-6 rounded-lg border-2 cursor-pointer transition-all ${
+                  selectedRole === 'customer'
+                    ? 'border-cyber-cyan bg-cyber-cyan/10'
+                    : 'border-slate-800 bg-slate-900/30 hover:border-cyber-cyan/50'
+                }`}
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <ShoppingBag className="h-6 w-6 text-cyber-cyan" />
+                  <h3 className="font-display text-lg font-bold uppercase tracking-wider text-slate-100">
+                    Customer
+                  </h3>
+                </div>
+                <p className="text-slate-400 text-sm mb-4 leading-relaxed">
+                  Browse and purchase premium keyboards from verified sellers.
+                </p>
+                <ul className="space-y-2 text-xs text-slate-300">
+                  <li className="flex items-start gap-2">
+                    <span className="text-cyber-cyan mt-1">✓</span>
+                    <span>Browse all products</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-cyber-cyan mt-1">✓</span>
+                    <span>Advanced search & filters</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-cyber-cyan mt-1">✓</span>
+                    <span>Add to cart & checkout</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-cyber-cyan mt-1">✓</span>
+                    <span>Track your orders</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Seller Role Card */}
+              <div
+                onClick={() => handleRoleSelection('seller')}
+                className={`p-6 rounded-lg border-2 cursor-pointer transition-all ${
+                  selectedRole === 'seller'
+                    ? 'border-cyber-magenta bg-cyber-magenta/10'
+                    : 'border-slate-800 bg-slate-900/30 hover:border-cyber-magenta/50'
+                }`}
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <Store className="h-6 w-6 text-cyber-magenta" />
+                  <h3 className="font-display text-lg font-bold uppercase tracking-wider text-slate-100">
+                    Seller
+                  </h3>
+                </div>
+                <p className="text-slate-400 text-sm mb-4 leading-relaxed">
+                  Sell your keyboards to a global audience of enthusiasts.
+                </p>
+                <ul className="space-y-2 text-xs text-slate-300">
+                  <li className="flex items-start gap-2">
+                    <span className="text-cyber-magenta mt-1">✓</span>
+                    <span>Create & manage products</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-cyber-magenta mt-1">✓</span>
+                    <span>Upload product images</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-cyber-magenta mt-1">✓</span>
+                    <span>Track inventory</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-cyber-magenta mt-1">✓</span>
+                    <span>View sales analytics</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {selectedRole && (
+              <div className="pt-4">
+                <Button 
+                  variant="secondary" 
+                  onClick={() => setStep('form')}
+                  className="w-full justify-center py-3 font-display"
+                >
+                  Continue as {selectedRole === 'customer' ? 'Customer' : 'Seller'}
+                </Button>
+              </div>
+            )}
+
+            <div className="text-center border-t border-slate-900/60 pt-4 text-xs text-slate-500">
+              ALREADY HAVE AN ACCOUNT?{' '}
+              <Link to="/login" className="text-cyber-magenta hover:underline tracking-wider font-semibold">
+                AUTHORIZE CONTEXT
+              </Link>
+            </div>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-md mx-auto py-12 text-left relative">
-      {/* Glitchy visual background accents */}
       <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-cyber-magenta/5 blur-2xl rounded-full pointer-events-none" />
 
-      <Card title="INITIALIZE IDENTITY" glowColor="magenta" tag="IDENTITY MATRIX">
+      <Card title={`INITIALIZE ${selectedRole?.toUpperCase()} IDENTITY`} glowColor="magenta" tag="IDENTITY MATRIX">
         <form onSubmit={handleSubmit} className="space-y-5">
           <p className="text-slate-400 text-xs leading-relaxed">
             Register your unique signature variables inside the centralized database terminal.
           </p>
 
-          {/* Success Banner */}
           {success && (
             <div className="flex gap-2.5 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-xs text-emerald-500 leading-relaxed animate-pulse">
               <ShieldCheck className="h-5 w-5 flex-shrink-0" />
@@ -86,7 +203,6 @@ const Register = () => {
             </div>
           )}
 
-          {/* Error Alert Display */}
           {error && !success && (
             <div className="flex gap-2.5 p-4 bg-cyber-magenta/10 border border-cyber-magenta/30 rounded-lg text-xs text-cyber-magenta leading-relaxed">
               <ShieldAlert className="h-5 w-5 flex-shrink-0" />
@@ -97,7 +213,6 @@ const Register = () => {
             </div>
           )}
 
-          {/* Name field */}
           <div className="space-y-1.5">
             <label className="block font-display text-xs font-bold tracking-widest text-slate-400 uppercase">
               USER NAME / ALIAS:
@@ -115,7 +230,6 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Email field */}
           <div className="space-y-1.5">
             <label className="block font-display text-xs font-bold tracking-widest text-slate-400 uppercase">
               EMAIL ROUTING ADDRESS:
@@ -133,7 +247,6 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Password field */}
           <div className="space-y-1.5">
             <label className="block font-display text-xs font-bold tracking-widest text-slate-400 uppercase">
               CREATE KEYCODE SECRET:
@@ -151,7 +264,6 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Confirm Password field */}
           <div className="space-y-1.5">
             <label className="block font-display text-xs font-bold tracking-widest text-slate-400 uppercase">
               RE-ENTER KEYCODE SECRET:
@@ -169,8 +281,7 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Submit Action */}
-          <div className="pt-2">
+          <div className="pt-2 space-y-2">
             <Button 
               variant="secondary" 
               type="submit" 
@@ -188,9 +299,17 @@ const Register = () => {
                 </>
               )}
             </Button>
+            <Button 
+              variant="outline" 
+              type="button" 
+              onClick={handleBackToRole}
+              disabled={submitting}
+              className="w-full justify-center py-3 font-display"
+            >
+              ← CHANGE ROLE
+            </Button>
           </div>
 
-          {/* Switch link */}
           <div className="text-center border-t border-slate-900/60 pt-4 text-xs text-slate-500">
             WORKSTATION ALREADY DEPLOYED?{' '}
             <Link to="/login" className="text-cyber-magenta hover:underline tracking-wider font-semibold">

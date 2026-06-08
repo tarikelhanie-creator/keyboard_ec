@@ -6,21 +6,33 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
     public function stats()
     {
-        $orders = Order::query();
+        $user = Auth::user();
+        $ordersQuery = Order::query();
+        $productsQuery = Product::query();
+
+        // If seller, only show their products and related orders
+        if ($user->role === 'seller') {
+            $productsQuery->where('seller_id', $user->id);
+            // For orders, we need to filter by products that belong to this seller
+            $ordersQuery->whereHas('orderItems.product', function ($q) use ($user) {
+                $q->where('seller_id', $user->id);
+            });
+        }
 
         return response()->json([
-            'total_revenue' => (float) $orders->clone()->where('status', '!=', 'cancelled')->sum('total_price'),
-            'total_orders' => Order::count(),
-            'pending_orders' => Order::where('status', 'pending')->count(),
-            'total_products' => Product::count(),
-            'low_stock_products' => Product::where('stock', '<', 10)->count(),
-            'total_users' => User::count(),
-            'recent_orders' => Order::with(['user:id,name,email'])
+            'total_revenue' => (float) $ordersQuery->clone()->where('status', '!=', 'cancelled')->sum('total_price'),
+            'total_orders' => $ordersQuery->clone()->count(),
+            'pending_orders' => $ordersQuery->clone()->where('status', 'pending')->count(),
+            'total_products' => $productsQuery->clone()->count(),
+            'low_stock_products' => $productsQuery->clone()->where('stock', '<', 10)->count(),
+            'total_users' => $user->role === 'seller' ? 1 : User::count(),
+            'recent_orders' => $ordersQuery->with(['user:id,name,email', 'orderItems.product'])
                 ->latest()
                 ->take(6)
                 ->get(),
@@ -29,8 +41,16 @@ class AdminController extends Controller
 
     public function orders(Request $request)
     {
+        $user = Auth::user();
         $query = Order::with(['user:id,name,email', 'orderItems.product'])
             ->latest();
+
+        // If seller, only show orders for their products
+        if ($user->role === 'seller') {
+            $query->whereHas('orderItems.product', function ($q) use ($user) {
+                $q->where('seller_id', $user->id);
+            });
+        }
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);

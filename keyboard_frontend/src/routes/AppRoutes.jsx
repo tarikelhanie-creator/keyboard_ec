@@ -11,7 +11,7 @@ import Register from '../pages/Register';
 import NotFound from '../pages/NotFound';
 import ProtectedRoute from '../components/ProtectedRoute';
 import GuestRoute from '../components/GuestRoute';
-import AdminRoute from '../components/AdminRoute';
+import SellerRoute from '../components/SellerRoute';
 import AdminLayout from '../admin/layouts/AdminLayout';
 import AdminDashboard from '../admin/pages/AdminDashboard';
 import AdminProducts from '../admin/pages/AdminProducts';
@@ -20,8 +20,8 @@ import AdminOrders from '../admin/pages/AdminOrders';
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Admin dashboard — separate layout, no storefront chrome */}
-      <Route element={<AdminRoute />}>
+      {/* Seller dashboard — separate layout, no storefront chrome */}
+      <Route element={<SellerRoute />}>
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="products" element={<AdminProducts />} />

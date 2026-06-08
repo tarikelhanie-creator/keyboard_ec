@@ -87,11 +87,11 @@ const Navbar = () => {
             {/* Authentication telemetry status */}
             {user ? (
               <div className="flex items-center gap-4 pl-2 border-l border-slate-800/80">
-                {user.role === 'admin' && (
+                {user.role === 'seller' && (
                   <Link
                     to="/admin"
-                    className="p-2 border border-slate-800 hover:border-cyber-cyan/40 rounded text-slate-400 hover:text-cyber-cyan transition-all"
-                    title="Admin Dashboard"
+                    className="p-2 border border-slate-800 hover:border-cyber-magenta/40 rounded text-slate-400 hover:text-cyber-magenta transition-all"
+                    title="Seller Dashboard"
                   >
                     <LayoutDashboard className="h-4 w-4" />
                   </Link>

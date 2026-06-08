@@ -60,9 +60,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Register handler
-  const register = async (name, email, password) => {
+  const register = async (name, email, password, role = 'customer') => {
     try {
-      const response = await api.post('/register', { name, email, password });
+      const response = await api.post('/register', { name, email, password, role });
       return response.data;
     } catch (error) {
       console.error("Registration failed:", error);
