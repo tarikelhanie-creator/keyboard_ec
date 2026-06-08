@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Cpu, Zap, Volume2, ShieldCheck, Sliders, ChevronRight, Award } from 'lucide-react';
+import { Cpu, Zap, Volume2, ShieldCheck, Sliders, ChevronRight, Award, Store } from 'lucide-react';
 import Button from '../components/Button';
 import Card from '../components/Card';
 
@@ -169,7 +169,36 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 2. Swappable Matrix Color Switcher Demonstration */}
+      {/* 2. Resale Marketplace CTA */}
+      <section className="relative border-y border-cyber-cyan/10 bg-cyber-dark/40">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyber-cyan/5 via-transparent to-transparent pointer-events-none" />
+        <div className="relative max-w-5xl mx-auto px-6 py-16 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-cyber-magenta/15 border border-cyber-magenta/30 rounded-full text-[10px] font-display tracking-widest text-cyber-magenta mb-6">
+            <Store className="h-3 w-3" />
+            USER MARKETPLACE
+          </div>
+          <h2 className="font-display font-extrabold text-3xl md:text-4xl tracking-widest uppercase text-slate-100 mb-4">
+            Buy & Sell <span className="text-cyber-cyan">Used Gear</span>
+          </h2>
+          <p className="text-slate-400 text-sm max-w-2xl mx-auto mb-8">
+            List your unwanted keyboards, switches, and accessories. Other users can buy directly through the platform — no middlemen.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link to="/resale">
+              <Button variant="primary" className="py-3 px-8 text-sm">
+                Browse Marketplace
+              </Button>
+            </Link>
+            <Link to="/resale/create">
+              <Button variant="outline" className="py-3 px-8 text-sm">
+                Start Selling
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Swappable Matrix Color Switcher Demonstration */}
       <section id="telemetry" className="relative scroll-mt-24">
         <div className="text-center space-y-4 mb-12">
           <h2 className="font-display font-extrabold text-3xl md:text-4xl tracking-widest uppercase">

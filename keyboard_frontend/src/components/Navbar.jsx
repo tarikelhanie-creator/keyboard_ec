@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingCart, Cpu, Search, LogOut, LayoutDashboard } from 'lucide-react';
+import { Menu, X, ShoppingCart, Cpu, Search, LogOut, LayoutDashboard, Store } from 'lucide-react';
 import Button from './Button';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -17,6 +17,7 @@ const Navbar = () => {
   const navItems = [
     { name: 'HOME', path: '/' },
     { name: 'KEYBOARDS', path: '/products' },
+    { name: 'MARKET', path: '/resale', icon: Store },
     { name: 'CART', path: '/cart', icon: ShoppingCart },
   ];
 
@@ -74,15 +75,7 @@ const Navbar = () => {
 
           {/* Right Action buttons */}
           <div className="hidden md:flex items-center gap-4">
-            {/* Quick search container */}
-            <div className="relative">
-              <input 
-                type="text"
-                placeholder="SEARCH DB..."
-                className="bg-cyber-dark/80 border border-slate-800 focus:border-cyber-cyan/50 focus:outline-none rounded px-3 py-1.5 text-xs text-slate-300 font-display tracking-widest w-36 focus:w-48 transition-all duration-500 placeholder:text-slate-600 focus:shadow-[0_0_10px_rgba(0,240,255,0.1)]"
-              />
-              <Search className="absolute right-2.5 top-2.5 h-3.5 w-3.5 text-slate-500 pointer-events-none" />
-            </div>
+            
 
             {/* Authentication telemetry status */}
             {user ? (
@@ -99,6 +92,12 @@ const Navbar = () => {
                 <span className="font-display text-xs font-bold text-cyber-magenta tracking-widest uppercase truncate max-w-[100px]" title={user.name}>
                   USR// {user.name}
                 </span>
+                
+                <Link to="/resale/dashboard" className="p-2 border border-slate-800 hover:border-cyber-cyan/40 rounded text-slate-400 hover:text-cyber-cyan transition-all" title="My Resale Dashboard">
+                  <LayoutDashboard className="h-4 w-4" />
+                </Link>
+                
+                
                 
                 <button
                   onClick={logout}
@@ -119,11 +118,7 @@ const Navbar = () => {
             )}
 
             {/* Store Entry CTA */}
-            <Link to="/products">
-              <Button variant="primary" className="py-1.5 px-4 text-xs font-display">
-                ENTER STORE
-              </Button>
-            </Link>
+            
           </div>
 
           {/* Mobile menu button */}

@@ -18,6 +18,12 @@ import AdminProducts from '../admin/pages/AdminProducts';
 import AdminCategories from '../admin/pages/AdminCategories';
 import AdminOrders from '../admin/pages/AdminOrders';
 
+// Resale pages
+import ResaleMarketplacePage from '../pages/ResaleMarketplace';
+import ResaleListingDetailsPage from '../pages/ResaleListingDetails';
+import ResaleCreateListingPage from '../pages/ResaleCreateListing';
+import ResaleDashboardPage from '../pages/ResaleDashboard';
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -32,6 +38,10 @@ const AppRoutes = () => {
       </Route>
 
       <Route element={<MainLayout />}>
+        {/* Resale marketplace */}
+        <Route path="/resale" element={<ResaleMarketplacePage />} />
+        <Route path="/resale/:id" element={<ResaleListingDetailsPage />} />
+
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Products />} />
@@ -41,6 +51,12 @@ const AppRoutes = () => {
         <Route element={<GuestRoute />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+        </Route>
+
+        {/* Protected Resale Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/resale/dashboard" element={<ResaleDashboardPage />} />
+          <Route path="/resale/create" element={<ResaleCreateListingPage />} />
         </Route>
 
         {/* Protected E-commerce Routes */}
